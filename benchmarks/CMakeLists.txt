@@ -17,3 +17,5 @@ target_link_libraries(benchmark PUBLIC double-conversion)
 if(ENABLE_RYU)
     target_link_libraries(benchmark PUBLIC ryu_parse)
 endif()
+
+target_link_libraries(benchmark PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../vendor/libzig_ftoa.a)

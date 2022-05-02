@@ -174,6 +174,22 @@ double findmax_absl_from_chars(std::vector<std::string> &s) {
   }
   return answer;
 }
+
+extern "C" int zig_ftoa64(const char *s, size_t l, double *result);
+
+double findmax_zig_ftoa64(std::vector<std::string> &s) {
+  double answer = 0;
+  double x = 0;
+  for (std::string &st : s) {
+    int r = zig_ftoa64(st.data(), st.size(), &x);
+    if (r != 0) {
+      throw std::runtime_error("bug in findmax_absl_from_chars");
+    }
+    answer = answer > x ? answer : x;
+  }
+  return answer;
+}
+
 #ifdef __linux__
 template <class T>
 std::vector<event_count> time_it_ns(std::vector<std::string> &lines,
@@ -305,6 +321,7 @@ void process(std::vector<std::string> &lines, size_t volume) {
 #ifdef FROM_CHARS_AVAILABLE_MAYBE
   pretty_print(volume, lines.size(), "from_chars", time_it_ns(lines, findmax_from_chars, repeat));
 #endif
+  pretty_print(volume, lines.size(), "zig_ftoa", time_it_ns(lines, findmax_zig_ftoa64, repeat));
 }
 
 void fileload(const char *filename) {
